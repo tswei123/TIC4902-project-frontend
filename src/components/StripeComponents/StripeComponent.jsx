@@ -17,7 +17,7 @@ const StripeComponent = () => {
     const getPaymentIntent = async () => {
       try{
         const response = await fetch(`${process.env.REACT_APP_STRIPE_URL}/create-payment-intent`, {
-          method: "POST",
+          method: "GET",
           body: JSON.stringify({
             email: email,
           }),
