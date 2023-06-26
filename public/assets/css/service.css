@@ -1,0 +1,24 @@
+.service {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.howtorent {
+  background: #f9c940;
+}
+
+#howtorentsection .btn {
+  background: #eedfb4;
+  color: black;
+  border-radius: 10px;
+  border: 2px solid black;
+}
+
+#serviceheading {
+  margin-bottom: 30px;
+}
+
+#howtorentbanner {
+  background: url("../../assets/img/Rss-32.png");
+}
+

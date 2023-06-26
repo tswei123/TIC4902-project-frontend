@@ -1,0 +1,13 @@
+#header {
+  background: url("../../assets/img/Header.png");
+  background-size: cover;
+  color: black;
+  font-size: 17px;
+}
+
+.navbar-brand {
+  background: url("../../assets/img/logo.png") center / cover;
+  width: 221px;
+  height: 40px;
+}
+
