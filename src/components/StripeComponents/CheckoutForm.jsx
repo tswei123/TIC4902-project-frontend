@@ -19,7 +19,7 @@ const CheckoutForm = () => {
   const processRefund = async (paymentIntent, amount) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_STRIPE_URL}/refund`, {
-        method: "GET",
+        method: "POST",
         body: JSON.stringify({
           payment_intent: paymentIntent.id,
           amount: amount
