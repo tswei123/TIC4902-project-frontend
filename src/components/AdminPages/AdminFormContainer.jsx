@@ -83,7 +83,7 @@ const useAdminForm = () => {
   const handleImageFile = () => {
     const formData = new FormData();
     formData.append('file', image);
-    fetch('http://localhost:8080/api/order/addImage', {
+    fetch('${process.env.REACT_APP_SPRING_URL}/order/addImage', {
       method: 'post',
       body: formData
     }).then(res => {
