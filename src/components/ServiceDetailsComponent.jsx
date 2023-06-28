@@ -54,7 +54,6 @@ const ServiceDetail = () => {
                     if(response.data.quantity <= 0) {
                         setInStock(false);
                     }
-                    setLoading(true);
                 }
                 return () => {
                     componentMounted = false;
@@ -62,7 +61,7 @@ const ServiceDetail = () => {
             })
         }
         getData();
-    }, [loading]);
+    }, []);
 
     useEffect(() => {
         if (servicedata){
@@ -144,7 +143,13 @@ const ServiceDetail = () => {
                     console.log(addCart);
                     addItem(addCart);
                     setItemAdded(true);
-                    setLoading(false);
+                    if((servicedata.quantity - 1) <= 0) {
+                        setInStock(false);
+                    }
+                    setServiceData( {
+                        ...servicedata,
+                        quantity: servicedata.quantity - 1
+                    }
                 }
             }
             catch (error) {
