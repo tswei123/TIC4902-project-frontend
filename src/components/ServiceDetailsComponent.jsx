@@ -143,13 +143,14 @@ const ServiceDetail = () => {
                     console.log(addCart);
                     addItem(addCart);
                     setItemAdded(true);
-                    if((servicedata.quantity - 1) <= 0) {
+                    let newQuantity = servicedata.quantity - 1
+                    if(newQuantity <= 0) {
                         setInStock(false);
                     }
-                    setServiceData( {
+                    setServiceData({
                         ...servicedata,
-                        quantity: servicedata.quantity - 1
-                    }
+                        quantity: newQuantity
+                    })
                 }
             }
             catch (error) {
