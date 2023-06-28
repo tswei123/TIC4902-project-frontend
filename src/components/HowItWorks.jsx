@@ -32,7 +32,7 @@ const HowitWorks = () => {
                 <div id="howtorentbanner" class="p-5 mb-4 round-3 position-relative" style={{ margin: "0;" }}>
                     <div class="container-fluid py-5" style={{ zIndex: "999999;" }}>
                         <h1 class="display-5 fw-bold">How to Rent?</h1>
-                        <p class="col-md-8 fs-4">Not sure how? We are here to help! Read through our friendly quick guide below to
+                        <p class="col-md-8 fs-4 text-center">Not sure how? We are here to help! Read through our friendly quick guide below to
                             find out more.</p>
                     </div>
                 </div>
