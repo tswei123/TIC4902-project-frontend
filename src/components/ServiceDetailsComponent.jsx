@@ -54,6 +54,7 @@ const ServiceDetail = () => {
                     if(response.data.quantity <= 0) {
                         setInStock(false);
                     }
+                    setLoading(true);
                 }
                 return () => {
                     componentMounted = false;
