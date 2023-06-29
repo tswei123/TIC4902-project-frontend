@@ -265,6 +265,7 @@ const ServiceDetail = () => {
                                                 checked={item.isSelected}
                                                 value={item.id}
                                                 onChange={handleCheckbox}
+                                                aria-label={item.id}
                                             />
                                         }
                                         label={
@@ -384,11 +385,11 @@ const ServiceDetail = () => {
                                 <hr />
                                 {!inStock ?
                                     <>
-                                        <Button disabled={!inStock}>Submit</Button>
+                                        <Button aria-label='submit-button' disabled={!inStock}>Submit</Button>
                                         <div>Sorry! We are out of stock.</div>
                                     </>
                                     :
-                                    <Button onClick={handleSubmit}>Submit</Button>
+                                    <Button aria-label='submit-button' onClick={handleSubmit}>Submit</Button>
                                 }
                                 <LoginRequired showModal={displayLoginModal} confirmModal={handleSubmit} hideModal={hideLoginModal} />
                                 <ItemAddedConfirmation showModal={itemAdded} hideModal={setItemAdded} />
@@ -407,47 +408,3 @@ const ServiceDetail = () => {
 }
 
 export default ServiceDetail;
-
-/**            <div className="row">
-                <Breadcrumb>
-                    <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
-                    <BreadcrumbItem><Link to="/service">Menu</Link></BreadcrumbItem>
-                    <BreadcrumbItem active>{props.products.name}</BreadcrumbItem>
-                </Breadcrumb>
-                <div className="col-12">
-                    <h3>{props.service.name}</h3>
-                    <hr />
-                </div>                
-            </div>
-            <div className="row">
-                <div className="col-12 col-md-5 m-1">
-                    <RenderService product={props.product} />
-                </div>
-            </div>
-
-
-
-
-
-
-         function RenderItem({servideId}) {
-        if (product != null) {
-            return (
-                <div className="col-12 col-md-5 m-1">
-                    <Card>
-                        <CardImg width="100%" src={product.image} alt={product.name} />
-                        <CardBody>
-                            <CardTitle> {product.name}</CardTitle>
-                            <CardText> {product.description} </CardText>
-                        </CardBody>
-                    </Card>
-                </div>
-            );
-        }
-        else {
-            return (
-                <div></div>
-            );
-        }
-    }       
-            */
