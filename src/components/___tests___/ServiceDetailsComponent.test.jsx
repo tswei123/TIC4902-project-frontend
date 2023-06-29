@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen } from '@testing-library/react'
 import React from 'react'
 import '@testing-library/jest-dom'
 import ServiceDetail from '../ServiceDetailsComponent'
@@ -59,7 +58,7 @@ describe('Service detail page', () => {
                         days: 3
                     }
                 ],
-                quantity: 5,
+                quantity: 0,
                 returnprice: 20,
                 servicedesc: 'test description',
                 servicename: 'test service',
@@ -73,10 +72,32 @@ describe('Service detail page', () => {
             render(<ServiceDetail />, { wrapper: ComponentWrapper });
         })
         expect(axios.get).toHaveBeenCalledWith(`${process.env.REACT_APP_SPRING_URL}/order/getIndividualService?id=1`);
+        expect(screen.getByLabelText(/delivery-cost/i)).toHaveTextContent('20');
+        expect(screen.getByLabelText(/deposit-cost/i)).toHaveTextContent('120');
+        expect(screen.getByLabelText(/total-cost/i)).toHaveTextContent('175');
         //expect(screen.getByText(/Total Cost: $175/i)).toBeInTheDocument();  //Issue with testing library when using javascript with text --- https://github.com/testing-library/react-testing-library/issues/53
         //preview.debug();
+    })
+    test('Service has no stock', async () => {
+        await act(async () => {
+            render(<ServiceDetail />, { wrapper: ComponentWrapper });
+        })
+        expect(screen.getByLabelText(/submit-button/i)).toHaveAttribute('disabled');
+    })
+
+    test('Service cost updates properly', async () => {
+        await act(async () => {
+            render(<ServiceDetail />, { wrapper: ComponentWrapper });
+        })
+        expect(screen.getByLabelText(/addon-cost/i)).toHaveTextContent('0');
+        expect(screen.getByLabelText(/total-cost/i)).toHaveTextContent('175');
+        fireEvent.click(screen.getByLabelText(/1/i));
+        expect(screen.getByLabelText(/addon-cost/i)).toHaveTextContent('4');
+        expect(screen.getByLabelText(/total-cost/i)).toHaveTextContent('179');
     })
 
 
 })
+
+
 
