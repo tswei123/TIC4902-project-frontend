@@ -46,6 +46,12 @@ jobs:
       run: |
         npm install
         npm run build --if-present
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: npm test
+      run: |
         npm run test --if-present
 
     - name: Upload artifact for deployment job
@@ -53,7 +59,7 @@ jobs:
       with:
         name: node-app
         path: build
-
+  
   deploy:
     permissions:
       contents: none
