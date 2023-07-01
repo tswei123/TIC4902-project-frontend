@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardImg, CardBody, CardText,
     CardTitle, Breadcrumb, BreadcrumbItem, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';    
-import { useParams } from "react-router-dom";
 import axios from 'axios';
 
 import DatePicker from "react-datepicker";
@@ -11,58 +9,35 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
 import { useSelector } from 'react-redux'
-import { useremail, auth } from '../redux/reducers/authSlice.js'
+import { useremail, auth } from '../../redux/reducers/authSlice.js'
 
-import useCart from './CartComponents/CartContainer.jsx'
+import useCart from '../CartComponents/CartContainer.jsx';
 
-import LoginRequired from './ModalComponents/LoginRequiredModal.jsx';
-import ItemAddedConfirmation from './ModalComponents/ItemAddedConfirmationModal.jsx';
+import LoginRequired from '../ModalComponents/LoginRequiredModal.jsx';
+import ItemAddedConfirmation from '../ModalComponents/ItemAddedConfirmationModal.jsx';
 
-Date.prototype.addDays = function(days) {
-    var date = new Date(this.valueOf());
-    date.setDate(date.getDate() + days);
-    return date;
-}
-
-const ServiceDetail = () => {
-    const [servicedata, setServiceData] = useState(null);
+const ServiceForm = ({servicedata, setServiceData}) => {
     const userEmail = useSelector(useremail);
     const userIsLoggedIn = useSelector(auth);
-    const { serviceId } = useParams();
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState((new Date()).addDays(1));
     const [cartItems, setCartItems] = useState([]);
     const [totalRentPrice, setTotalRentPrice] = useState(0);
     const [cartItemsPrice, setCartItemsPrice] = useState(0);
     const [cartPrices, setCartPrices] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [itemAdded, setItemAdded] = useState(false);
     const [displayLoginModal, setDisplayLoginModal] = useState(false);
     const [inStock, setInStock] = useState(true);
     const { addItem } = useCart();
     const ONE_DAY = 1000 * 60 * 60 * 24;
 
-    let componentMounted = true;
 
     useEffect(() => {
-        const getData = async () => {
-            await axios.get(`${process.env.REACT_APP_SPRING_URL}/order/getIndividualService?id=${serviceId}`)
-            .then(response => {
-                if (componentMounted) {
-                    setServiceData(response.data);
-                    addServiceItems(response.data.items);
-                    if(response.data.quantity <= 0) {
-                        setInStock(false);
-                    }
-                    setLoading(true);
-                }
-                return () => {
-                    componentMounted = false;
-                }
-            })
+        addServiceItems(servicedata.items)
+        if(servicedata.quantity <= 0) {
+            setInStock(false);
         }
-        getData();
-    }, []);
+    },[]);
 
     useEffect(() => {
         if (servicedata){
@@ -93,7 +68,6 @@ const ServiceDetail = () => {
         });
         setCartItems(selectedCartItems);
     }
-
     const showLoginModal = () => {
         setDisplayLoginModal(true);
       };
@@ -234,21 +208,6 @@ const ServiceDetail = () => {
         return cart;
     }
 
-    const RenderPrices = () => {
-        return (
-            <div className="">
-            {servicedata.prices?.sort((a, b) => a.days - b.days).map((individualPrice) => {
-                return (
-                    //modify buttons to other box styles
-                        <h5>
-                            ${individualPrice.price} / {individualPrice.days} days
-                        </h5>
-                );
-            })}
-            </div>
-        )
-    }
-
     const RenderItems = () => {
         return (
             <div className="row">
@@ -285,26 +244,6 @@ const ServiceDetail = () => {
                         );
                     })}
                 </tbody>
-            </div>
-        )
-    }
-
-    const RenderService = () => {
-        return (
-            <div class="col">
-                <div class="card">
-                    <img class="card-img-top w-100 d-block" src={`${process.env.REACT_APP_SPRING_URL}/order` + servicedata.imagepath} alt={servicedata.name} />
-                    <div class="card-body">
-                        <h4 class="card-title">{servicedata.servicename}</h4><p class="card-text">{servicedata.servicedesc}</p>
-                    </div>
-                    <div className="">
-                        {servicedata.prices?.sort((a, b) => a.days - b.days).map((individualPrice) => {
-                            return (
-                                <div><i class="icon ion-ios-pricetags" style={{ fontSize: "16px;" }}></i><span class="pricetag">${individualPrice.price} / {individualPrice.days} days</span></div>
-                            );
-                        })}
-                    </div>
-                </div>
             </div>
         )
     }
@@ -360,51 +299,26 @@ const ServiceDetail = () => {
     }
 
     return (
-        loading ?
+        <div className="border border-2 rounded">
+        <RenderForm />
+        <hr/>
+        <RenderItems />
+        <hr/>
+        <RenderCalculation />
+        <hr />
+        {!inStock ?
             <>
-                <div className="container">
-                    <div className="row">
-                        <Breadcrumb>
-                            <BreadcrumbItem><Link to="/">Home</Link></BreadcrumbItem>
-                            <BreadcrumbItem><Link to="/service">Services</Link></BreadcrumbItem>
-                            <BreadcrumbItem active aria-label="bc-service-name" >{servicedata.servicename}</BreadcrumbItem>
-                        </Breadcrumb>
-                    </div>
-
-                    <div className="row">
-                        <div className="col-sm col-md-5">
-                            <RenderService />
-                        </div>
-                        <div className="col-sm col-md-7">
-                            <div className="border border-2 rounded">
-                                <RenderForm />
-                                <hr/>
-                                <RenderItems />
-                                <hr/>
-                                <RenderCalculation />
-                                <hr />
-                                {!inStock ?
-                                    <>
-                                        <Button aria-label='submit-button' disabled={!inStock}>Submit</Button>
-                                        <div>Sorry! We are out of stock.</div>
-                                    </>
-                                    :
-                                    <Button aria-label='submit-button' onClick={handleSubmit}>Submit</Button>
-                                }
-                                <LoginRequired showModal={displayLoginModal} confirmModal={handleSubmit} hideModal={hideLoginModal} />
-                                <ItemAddedConfirmation showModal={itemAdded} hideModal={setItemAdded} />
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-        </>
-        :
-        <>
-            <h2>Loading...</h2>
-        </>
+                <Button aria-label='submit-button' disabled={!inStock}>Submit</Button>
+                <div>Sorry! We are out of stock.</div>
+            </>
+            :
+            <Button aria-label='submit-button' onClick={handleSubmit}>Submit</Button>
+        }
+        <LoginRequired showModal={displayLoginModal} confirmModal={handleSubmit} hideModal={hideLoginModal} />
+        <ItemAddedConfirmation showModal={itemAdded} hideModal={setItemAdded} />
+    </div>
     )
 
 }
 
-export default ServiceDetail;
+export default ServiceForm;

@@ -15,7 +15,6 @@ const Service = () => {
     useEffect(() => {
         const getService = async() => {
             const response = await axios.get(`${process.env.REACT_APP_SPRING_URL}/order/getService`);
-            console.log(response)
             if(componentMounted && response){
                 setServiceData(await response.data);
             }
